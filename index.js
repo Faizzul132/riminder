@@ -488,6 +488,30 @@ app.post('/api/send-reminder/:type', requireAdmin, async (req, res) => {
     }
 });
 
+// WhatsApp Status & QR Route
+app.get('/admin/whatsapp', requireAdmin, async (req, res) => {
+    const waService = require('./whatsapp-service');
+    const QRCode = require('qrcode');
+    
+    const qrRaw = waService.getQRCode();
+    let qrImage = null;
+    
+    if (qrRaw) {
+        try {
+            qrImage = await QRCode.toDataURL(qrRaw);
+        } catch (err) {
+            console.error('Failed to generate QR Image:', err);
+        }
+    }
+    
+    res.render('pages/whatsapp', {
+        title: 'Koneksi WhatsApp',
+        active: 'whatsapp',
+        qrImage: qrImage,
+        isReady: waService.isReady()
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
     // Coba inisialisasi awal
