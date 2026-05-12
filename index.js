@@ -508,7 +508,9 @@ app.get('/admin/whatsapp', requireAdmin, async (req, res) => {
         title: 'Koneksi WhatsApp',
         active: 'whatsapp',
         qrImage: qrImage,
-        isReady: waService.isReady()
+        isReady: waService.isReady(),
+        lastError: waService.getLastError(),
+        isInitializing: waService.isInitializing()
     });
 });
 

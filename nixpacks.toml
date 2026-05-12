@@ -1,20 +1,5 @@
 [phases.setup]
-nixPkgs = ["nodejs", "npm", "google-chrome"]
-aptPkgs = [
-  "libnss3",
-  "libatk-bridge2.0-0",
-  "libatk1.0-0",
-  "libcups2",
-  "libgbm1",
-  "libasound2",
-  "libpangocairo-1.0-0",
-  "libxss1",
-  "libgtk-3-0",
-  "ca-certificates",
-  "fonts-liberation",
-  "xdg-utils",
-  "wget"
-]
+nixPkgs = ["nodejs", "npm"]
 
 [phases.build]
 cmds = ["npm install"]

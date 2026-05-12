@@ -1,79 +1,110 @@
-const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcodeTerminal = require('qrcode-terminal');
-const db = require('./db');
+const { 
+    default: makeWASocket, 
+    useMultiFileAuthState, 
+    DisconnectReason, 
+    fetchLatestBaileysVersion, 
+    makeCacheableSignalKeyStore 
+} = require("@whiskeysockets/baileys");
+const pino = require("pino");
+const path = require("path");
+const fs = require("fs");
 
+let sock = null;
 let latestQRCode = null;
 let isReady = false;
+let lastError = null;
 
-// Initialize WhatsApp Client with Railway-friendly settings
-const client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: {
-        executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome-stable',
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu'
-        ],
-        headless: true
-    }
+async function connectToWhatsApp() {
+    const { state, saveCreds } = await useMultiFileAuthState(path.join(__dirname, "auth_info_baileys"));
+    const { version, isLatest } = await fetchLatestBaileysVersion();
+    
+    console.log(`Using WA version v${version.join(".")}, isLatest: ${isLatest}`);
+
+    sock = makeWASocket({
+        version,
+        printQRInTerminal: true,
+        auth: {
+            creds: state.creds,
+            keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })),
+        },
+        logger: pino({ level: "silent" }),
+        browser: ["KelasApp", "Safari", "1.0.0"],
+    });
+
+    sock.ev.on("connection.update", (update) => {
+        const { connection, lastDisconnect, qr } = update;
+        
+        if (qr) {
+            latestQRCode = qr;
+            isReady = false;
+            console.log("QR Code received. Please scan via Web Dashboard.");
+        }
+
+        if (connection === "close") {
+            const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
+            console.log("Connection closed due to", lastDisconnect?.error, ", reconnecting:", shouldReconnect);
+            isReady = false;
+            latestQRCode = null;
+            if (shouldReconnect) {
+                connectToWhatsApp();
+            }
+        } else if (connection === "open") {
+            console.log("WhatsApp connection opened successfully!");
+            isReady = true;
+            latestQRCode = null;
+            lastError = null;
+        }
+    });
+
+    sock.ev.on("creds.update", saveCreds);
+
+    // Handle messages (optional, if needed for commands)
+    sock.ev.on("messages.upsert", async ({ messages, type }) => {
+        if (type === "notify") {
+            for (const msg of messages) {
+                if (!msg.key.fromMe && msg.message) {
+                    const text = msg.message.conversation || msg.message.extendedTextMessage?.text;
+                    if (text === "!ping") {
+                        await sock.sendMessage(msg.key.remoteJid, { text: "pong" });
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Start connection
+connectToWhatsApp().catch(err => {
+    console.error("Critical error in WA connection:", err);
+    lastError = err.message;
 });
-
-client.on('qr', (qr) => {
-    latestQRCode = qr;
-    console.log('QR Code received. Scan it in the web dashboard.');
-    qrcodeTerminal.generate(qr, { small: true });
-});
-
-client.on('ready', () => {
-    console.log('WhatsApp Bot is ready!');
-    isReady = true;
-    latestQRCode = null;
-});
-
-client.on('authenticated', () => {
-    console.log('WhatsApp authenticated successfully');
-});
-
-client.on('auth_failure', (msg) => {
-    console.error('WhatsApp authentication failure:', msg);
-    isReady = false;
-});
-
-client.on('disconnected', (reason) => {
-    console.log('WhatsApp disconnected:', reason);
-    isReady = false;
-    latestQRCode = null;
-});
-
-// Auto initialize
-(async () => {
-    try {
-        await client.initialize();
-    } catch (err) {
-        console.error('Failed to initialize WhatsApp:', err.message);
-    }
-})();
 
 const sendMessage = async (to, message) => {
-    if (!isReady) {
-        console.log('WhatsApp client not ready.');
+    if (!isReady || !sock) {
+        console.log("WhatsApp client not ready.");
         return false;
     }
     try {
-        await client.sendMessage(to, message);
-        console.log(`Message sent to ${to}`);
+        // Formating JID (Ensure it ends with @s.whatsapp.net or @g.us)
+        let jid = to;
+        if (!jid.includes("@")) {
+            jid = jid.replace(/\D/g, "") + "@s.whatsapp.net";
+        }
+        
+        await sock.sendMessage(jid, { text: message });
+        console.log(`Message sent to ${jid}`);
         return true;
     } catch (error) {
-        console.error('Failed to send WhatsApp message:', error);
+        console.error("Failed to send WhatsApp message:", error);
         return false;
     }
 };
 
 module.exports = {
-    client,
     sendMessage,
     isReady: () => isReady,
-    getQRCode: () => latestQRCode
+    getQRCode: () => latestQRCode,
+    getLastError: () => lastError,
+    isInitializing: () => !isReady && !latestQRCode && !lastError,
+    retry: connectToWhatsApp
 };

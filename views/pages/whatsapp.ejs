@@ -8,8 +8,10 @@
                     <span><i class="bi bi-whatsapp me-2"></i> Status Koneksi WhatsApp</span>
                     <% if (isReady) { %>
                         <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Terhubung</span>
+                    <% } else if (lastError) { %>
+                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i> Error</span>
                     <% } else { %>
-                        <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle me-1"></i> Terputus</span>
+                        <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i> Menunggu</span>
                     <% } %>
                 </div>
                 <div class="card-body text-center py-5">
@@ -18,38 +20,48 @@
                             <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
                         </div>
                         <h4 class="mb-3">WhatsApp Berhasil Terhubung!</h4>
-                        <p class="text-muted">Sistem sudah siap mengirimkan notifikasi tugas dan piket otomatis ke grup WhatsApp Anda.</p>
+                        <p class="text-muted">Sistem sudah siap mengirimkan notifikasi otomatis.</p>
                         <a href="/settings" class="btn btn-primary mt-3">
-                            <i class="bi bi-gear me-2"></i> Buka Pengaturan Notifikasi
+                            <i class="bi bi-gear me-2"></i> Buka Pengaturan
                         </a>
+                    <% } else if (lastError) { %>
+                        <div class="mb-4">
+                            <i class="bi bi-exclamation-octagon-fill text-danger" style="font-size: 5rem;"></i>
+                        </div>
+                        <h4 class="text-danger mb-3">Terjadi Kesalahan</h4>
+                        <div class="alert alert-danger mb-4 text-start">
+                            <code><%= lastError %></code>
+                        </div>
+                        <p class="text-muted small">Kemungkinan besar library browser (Chrome) tidak ditemukan atau tidak kompatibel dengan server.</p>
+                        <button onclick="window.location.reload()" class="btn btn-primary mt-2">
+                            <i class="bi bi-arrow-clockwise me-2"></i> Coba Lagi
+                        </button>
                     <% } else if (qrImage) { %>
                         <h4 class="mb-4">Scan QR Code</h4>
-                        <p class="text-muted mb-4">Silakan buka WhatsApp di ponsel Anda, lalu buka <strong>Perangkat Tertaut</strong> dan scan kode di bawah ini:</p>
+                        <p class="text-muted mb-4">Scan kode di bawah ini dengan WhatsApp Anda:</p>
                         
-                        <div class="qr-container p-3 bg-white d-inline-block rounded shadow-sm mb-4">
+                        <div class="qr-container p-3 bg-white d-inline-block rounded shadow-sm mb-4 border">
                             <img src="<%= qrImage %>" alt="WhatsApp QR Code" class="img-fluid" style="max-width: 300px;">
                         </div>
                         
-                        <div class="alert alert-info mt-3 text-start">
-                            <ul class="mb-0 small">
-                                <li>Pastikan koneksi internet ponsel stabil.</li>
-                                <li>QR Code akan otomatis diperbarui jika tidak segera di-scan.</li>
-                                <li>Setelah scan, halaman ini akan otomatis menunjukkan status "Terhubung" saat Anda refresh.</li>
-                            </ul>
-                        </div>
+                        <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i> QR akan otomatis diperbarui jika sudah kadaluarsa.</p>
                         
-                        <button onclick="window.location.reload()" class="btn btn-outline-primary mt-3">
-                            <i class="bi bi-arrow-clockwise me-2"></i> Refresh Status
+                        <button onclick="window.location.reload()" class="btn btn-outline-primary mt-4">
+                            <i class="bi bi-arrow-clockwise me-2"></i> Cek Status Koneksi
                         </button>
                     <% } else { %>
-                        <div class="py-5">
-                            <div class="spinner-border text-primary mb-3" role="status">
+                        <div class="py-3">
+                            <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                            <h4 class="mb-3">Menyiapkan WhatsApp...</h4>
-                            <p class="text-muted">Aplikasi sedang menginisialisasi browser. Silakan tunggu sebentar atau coba refresh halaman ini beberapa saat lagi.</p>
+                            <h4 class="mb-3">Menyiapkan Browser...</h4>
+                            <p class="text-muted">Sedang menjalankan sistem WhatsApp di server. Proses ini bisa memakan waktu 1-2 menit pada saat pertama kali.</p>
+                            <div class="alert alert-light border small text-start">
+                                <i class="bi bi-terminal me-2"></i> <strong>Log Status:</strong><br>
+                                <%= isInitializing ? 'Sedang inisialisasi browser...' : 'Menunggu antrean...' %>
+                            </div>
                             <button onclick="window.location.reload()" class="btn btn-outline-primary mt-3">
-                                <i class="bi bi-arrow-clockwise me-2"></i> Cek Lagi
+                                <i class="bi bi-arrow-clockwise me-2"></i> Refresh Halaman
                             </button>
                         </div>
                     <% } %>
