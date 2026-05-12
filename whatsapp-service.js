@@ -63,9 +63,16 @@ async function connectToWhatsApp() {
         if (type === "notify") {
             for (const msg of messages) {
                 if (!msg.key.fromMe && msg.message) {
-                    const text = msg.message.conversation || msg.message.extendedTextMessage?.text;
+                    const text = (msg.message.conversation || msg.message.extendedTextMessage?.text || "").toLowerCase();
+                    const from = msg.key.remoteJid;
+
                     if (text === "!ping") {
-                        await sock.sendMessage(msg.key.remoteJid, { text: "pong" });
+                        await sock.sendMessage(from, { text: "pong" });
+                    }
+
+                    if (text === "!groupid") {
+                        await sock.sendMessage(from, { text: `ID Grup ini adalah: ${from}` });
+                        console.log(`Group ID requested: ${from}`);
                     }
                 }
             }
