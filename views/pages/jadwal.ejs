@@ -1,0 +1,85 @@
+<%- include('../partials/header') %>
+
+<div class="premium-card">
+    <div class="card-header border-0 bg-transparent pt-4 pb-0">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-calendar3 text-primary me-2"></i> Jadwal Pelajaran Kelas X-5</h5>
+    </div>
+    
+    <div class="card-body">
+        <p class="text-muted mb-4">Jadwal pelajaran yang dikelompokkan per hari agar mudah dilihat.</p>
+        
+        <div class="table-responsive">
+            <table class="table premium-table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th width="16%" class="text-start">Hari</th>
+                        <th width="14%">Sesi 1</th>
+                        <th width="14%">Sesi 2</th>
+                        <th width="14%">Sesi 3</th>
+                        <th width="14%">Sesi 4</th>
+                        <th width="14%">Sesi 5</th>
+                        <th width="14%">Sesi 6</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% 
+                    const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    days.forEach(day => { 
+                        const mapel = jadwal[day] || [];
+                    %>
+                    <tr>
+                        <td class="text-start fw-bold text-primary"><%= day %></td>
+                        <% for(let i=0; i<6; i++) { %>
+                            <% if (mapel[i] && mapel[i] !== 'Jam Kosong' && mapel[i] !== '-') { %>
+                                <td>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 w-100 d-block text-wrap">
+                                        <%= mapel[i] %>
+                                    </span>
+                                </td>
+                            <% } else { %>
+                                <td class="text-muted opacity-50">—</td>
+                            <% } %>
+                        <% } %>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-4 p-3 rounded" style="background-color: var(--bg-main);">
+            <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-2 text-warning"></i> Keterangan Mata Pelajaran:</h6>
+            <div class="row small text-muted">
+                <div class="col-md-4">
+                    <ul class="mb-0">
+                        <li><strong>AQH:</strong> Al Quran dan Hadist</li>
+                        <li><strong>AAK:</strong> Akidah Akhlak</li>
+                        <li><strong>MTK:</strong> Matematika</li>
+                        <li><strong>BAR:</strong> Bahasa Arab</li>
+                        <li><strong>SEJ:</strong> Sejarah</li>
+                        <li><strong>BIG:</strong> Bahasa Inggris</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="mb-0">
+                        <li><strong>KIM:</strong> Kimia</li>
+                        <li><strong>BIN:</strong> Bahasa Indonesia</li>
+                        <li><strong>SKI:</strong> Sejarah Kebudayaan Islam</li>
+                        <li><strong>BIO:</strong> Biologi</li>
+                        <li><strong>INF:</strong> Informatika</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <ul class="mb-0">
+                        <li><strong>FQH:</strong> Fiqih</li>
+                        <li><strong>GEO:</strong> Geografi</li>
+                        <li><strong>FIS:</strong> Fisika</li>
+                        <li><strong>SOS:</strong> Sosiologi</li>
+                        <li><strong>POK:</strong> PJOK / Olahraga</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,95 @@
+<%- include('../partials/header') %>
+
+<div class="row">
+    <div class="col-md-6 col-lg-4">
+        <div class="stat-card bg-gradient-primary">
+            <div class="stat-icon"><i class="bi bi-journal-check"></i></div>
+            <div class="stat-details">
+                <h3><%= totalTugas %></h3>
+                <p>Tugas Pending</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="stat-card bg-gradient-success">
+            <div class="stat-icon"><i class="bi bi-calendar2-day"></i></div>
+            <div class="stat-details">
+                <h3><%= hari %></h3>
+                <p>Hari Ini</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-4">
+        <div class="stat-card bg-gradient-warning">
+            <div class="stat-icon"><i class="bi bi-people"></i></div>
+            <div class="stat-details">
+                <h3><%= piketHariIni.length %></h3>
+                <p>Orang Piket Hari Ini</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8 mb-4">
+        <div class="premium-card h-100">
+            <div class="card-header">
+                <span><i class="bi bi-megaphone me-2"></i> Pengumuman & Info</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3 p-3 rounded" style="background-color: rgba(67, 97, 238, 0.05); border-left: 4px solid var(--primary-color);">
+                    <div class="ms-3">
+                        <h5 class="mb-1 text-primary">Selamat Datang di Sistem Manajemen Kelas Baru!</h5>
+                        <p class="mb-0 text-muted">Aplikasi ini dirancang untuk memudahkan pemantauan tugas harian dan jadwal kebersihan kelas. Notifikasi akan dikirimkan otomatis ke WhatsApp Grup.</p>
+                    </div>
+                </div>
+                
+                <h6 class="fw-bold mt-4 mb-3">Petugas Kebersihan Hari Ini (<%= hari %>):</h6>
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <% if (piketHariIni.length === 0) { %>
+                        <span class="text-muted fst-italic">Tidak ada jadwal piket hari ini.</span>
+                    <% } else { %>
+                        <% piketHariIni.forEach(p => { %>
+                            <span class="badge bg-light text-dark border p-2 px-3 rounded-pill">
+                                <i class="bi bi-person me-1"></i> <%= p.nama_siswa %>
+                            </span>
+                        <% }) %>
+                    <% } %>
+                </div>
+
+                <h6 class="fw-bold mb-3">Jadwal Pelajaran Hari Ini:</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <% if (!jadwalHariIni || jadwalHariIni.length === 0 || jadwalHariIni.every(j => j === 'Jam Kosong' || j === '-')) { %>
+                        <span class="text-muted fst-italic">Tidak ada jadwal pelajaran hari ini (Libur).</span>
+                    <% } else { %>
+                        <% jadwalHariIni.forEach((mapel, i) => { %>
+                            <% if (mapel !== 'Jam Kosong' && mapel !== '-') { %>
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 p-2 px-3 rounded-3">
+                                    Sesi <%= i+1 %>: <%= mapel %>
+                                </span>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+        <div class="premium-card h-100">
+            <div class="card-header">
+                <span><i class="bi bi-clock-history me-2"></i> Aktivitas</span>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-3 border-bottom pb-2">
+                        <small class="text-muted d-block"><i class="bi bi-circle-fill text-success me-2" style="font-size: 8px;"></i> Login Sistem</small>
+                        <span class="fw-bold"><%= user.nama %></span> masuk ke sistem.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

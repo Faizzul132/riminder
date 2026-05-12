@@ -1,0 +1,176 @@
+<%- include('../partials/header') %>
+
+<div class="premium-card">
+    <div class="card-header border-0 bg-transparent pt-4 pb-0">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-list-task text-primary me-2"></i> Daftar Tugas & PR</h5>
+            <% if (user.role === 'admin') { %>
+            <button class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#addTugasModal">
+                <i class="bi bi-plus-lg me-1"></i> Tambah Tugas
+            </button>
+            <% } %>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <!-- Filter Opsi Perhari -->
+        <div class="filter-section">
+            <i class="bi bi-funnel text-muted fs-5"></i>
+            <span class="fw-bold text-muted">Filter per Hari:</span>
+            <form action="/tugas" method="GET" class="d-flex align-items-center flex-grow-1">
+                <input type="date" name="date" class="form-control form-control-sm w-auto me-2" value="<%= filterDate %>">
+                <button type="submit" class="btn btn-sm btn-primary me-2">Terapkan</button>
+                <a href="/tugas" class="btn btn-sm btn-light border">Reset</a>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table premium-table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th width="15%">Mata Pelajaran</th>
+                        <th width="20%">Judul Tugas</th>
+                        <th width="35%">Deskripsi</th>
+                        <th width="15%">Deadline</th>
+                        <th width="10%">Status</th>
+                        <% if (user.role === 'admin') { %><th width="5%">Aksi</th><% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(tugas.length === 0) { %>
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="bi bi-journal-x text-muted fs-1 d-block mb-2"></i>
+                                <span class="text-muted">Tidak ada tugas ditemukan.</span>
+                            </td>
+                        </tr>
+                    <% } %>
+                    
+                    <% tugas.forEach(function(t) { %>
+                        <tr>
+                            <td>
+                                <% if(t.mapel) { %>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 p-2"><%= t.mapel %></span>
+                                <% } else { %>
+                                    <span class="text-muted">-</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark"><%= t.judul %></div>
+                            </td>
+                            <td>
+                                <span class="text-muted"><%= t.deskripsi || '-' %></span>
+                            </td>
+                            <td>
+                                <% 
+                                    const d = new Date(t.deadline);
+                                    const formattedDate = d.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                                %>
+                                <div class="badge bg-light text-dark border"><i class="bi bi-calendar-event me-1 text-primary"></i> <%= formattedDate %></div>
+                            </td>
+                            <td>
+                                <form action="/tugas/status/<%= t.id %>" method="POST" class="m-0 p-0">
+                                    <select name="status" class="form-select form-select-sm <%= t.status === 'selesai' ? 'bg-success text-white border-success' : 'bg-warning text-dark border-warning' %>" onchange="this.form.submit()" <%= user.role !== 'admin' ? 'disabled' : '' %>>
+                                        <option value="pending" <%= t.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                        <option value="selesai" <%= t.status === 'selesai' ? 'selected' : '' %>>Selesai</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <% if (user.role === 'admin') { %>
+                            <td>
+                                <a href="/tugas/delete/<%= t.id %>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus tugas ini?')"><i class="bi bi-trash"></i></a>
+                            </td>
+                            <% } %>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<% if (user.role === 'admin') { %>
+<!-- Modal Tambah Tugas (Banyak Sekaligus) -->
+<div class="modal fade" id="addTugasModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 rounded-4 shadow">
+      <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold">Tambah Tugas Baru (Per Hari)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="/tugas/add-bulk" method="POST">
+          <div class="modal-body p-4">
+              <div class="row mb-4">
+                  <div class="col-md-6">
+                      <label class="form-label fw-bold small text-muted">HARI PELAJARAN</label>
+                      <select id="hariPelajaran" class="form-select form-control-premium" required>
+                          <option value="">Pilih Hari</option>
+                          <option value="Senin">Senin</option>
+                          <option value="Selasa">Selasa</option>
+                          <option value="Rabu">Rabu</option>
+                          <option value="Kamis">Kamis</option>
+                          <option value="Jumat">Jumat</option>
+                          <option value="Sabtu">Sabtu</option>
+                      </select>
+                  </div>
+                  <div class="col-md-6">
+                      <label class="form-label fw-bold small text-muted">DEADLINE / TANGGAL PENGUMPULAN</label>
+                      <input type="date" name="deadline" class="form-control form-control-premium" required>
+                  </div>
+              </div>
+              
+              <div id="mapelInputsContainer" class="d-none">
+                  <h6 class="fw-bold mb-3 border-bottom pb-2">Daftar Mata Pelajaran & Tugas</h6>
+                  <p class="small text-muted mb-3">Kosongkan kolom tugas jika tidak ada PR untuk mata pelajaran tersebut.</p>
+                  <div id="dynamicInputs"></div>
+              </div>
+          </div>
+          <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-premium px-4" id="btnSubmitBulk" disabled>Simpan Semua Tugas</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    // Data jadwal dari server
+    const jadwalData = <%- jadwal %>;
+    const hariSelect = document.getElementById('hariPelajaran');
+    const container = document.getElementById('mapelInputsContainer');
+    const dynamicInputs = document.getElementById('dynamicInputs');
+    const btnSubmit = document.getElementById('btnSubmitBulk');
+
+    hariSelect.addEventListener('change', function() {
+        const hari = this.value;
+        dynamicInputs.innerHTML = '';
+        
+        if (hari && jadwalData[hari]) {
+            container.classList.remove('d-none');
+            btnSubmit.disabled = false;
+            
+            jadwalData[hari].forEach((mapel, index) => {
+                if(mapel !== 'Jam Kosong' && mapel !== '-') {
+                    const html = `
+                    <div class="mb-3 row align-items-center bg-light p-2 rounded">
+                        <div class="col-md-3 fw-bold text-primary">
+                            ${mapel}
+                            <input type="hidden" name="mapel" value="${mapel}">
+                        </div>
+                        <div class="col-md-9">
+                            <input type="text" name="judul" class="form-control form-control-sm border-0 shadow-sm" placeholder="Judul / Deskripsi PR (Biarkan kosong jika tidak ada)">
+                        </div>
+                    </div>`;
+                    dynamicInputs.insertAdjacentHTML('beforeend', html);
+                }
+            });
+        } else {
+            container.classList.add('d-none');
+            btnSubmit.disabled = true;
+        }
+    });
+</script>
+<% } %>
+
+<%- include('../partials/footer') %>

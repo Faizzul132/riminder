@@ -1,0 +1,339 @@
+<%- include('../partials/header') %>
+
+<% if (absenHariIni && absenHariIni.length > 0) { %>
+<div class="premium-card mb-4">
+    <div class="card-header border-0 bg-transparent pt-4 pb-0">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-clipboard-check text-success me-2"></i> Absensi Piket Hari Ini (<%= hari %>)</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table premium-table align-middle">
+                <thead>
+                    <tr>
+                        <th width="40%">Nama Siswa</th>
+                        <th width="30%">Status</th>
+                        <% if (user.role === 'admin') { %><th width="30%">Aksi</th><% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% absenHariIni.forEach(a => { %>
+                    <tr>
+                        <td class="fw-bold"><%= a.nama_siswa %></td>
+                        <td>
+                            <% if (a.status === 'Belum') { %>
+                                <span class="badge bg-secondary">Belum Absen</span>
+                            <% } else if (a.status === 'Hadir') { %>
+                                <span class="badge bg-success">Hadir / Sudah Piket</span>
+                            <% } else if (a.status === 'Tidak Hadir') { %>
+                                <span class="badge bg-danger">Tidak Hadir</span>
+                            <% } else { %>
+                                <span class="badge bg-warning text-dark">Izin</span>
+                            <% } %>
+                        </td>
+                        <% if (user.role === 'admin') { %>
+                        <td>
+                            <form action="/piket/absen/<%= a.id %>" method="POST" class="d-inline">
+                                <select name="status" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
+                                    <option value="Belum" <%= a.status === 'Belum' ? 'selected' : '' %>>Belum Absen</option>
+                                    <option value="Hadir" <%= a.status === 'Hadir' ? 'selected' : '' %>>Hadir</option>
+                                    <option value="Tidak Hadir" <%= a.status === 'Tidak Hadir' ? 'selected' : '' %>>Tidak Hadir</option>
+                                    <option value="Izin" <%= a.status === 'Izin' ? 'selected' : '' %>>Izin</option>
+                                </select>
+                            </form>
+                        </td>
+                        <% } %>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<div class="premium-card">
+    <div class="card-header border-0 bg-transparent pt-4 pb-0">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-broom text-primary me-2"></i> Jadwal Piket Kebersihan</h5>
+            <% if (user.role === 'admin') { %>
+            <div class="d-flex gap-2">
+                <a href="/piket/draft" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-eye me-1"></i> Draft Notifikasi
+                </a>
+                <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#penugasanModal">
+                    <i class="bi bi-person-check me-1"></i> Atur Penugasan
+                </button>
+                <button class="btn btn-premium btn-sm" data-bs-toggle="modal" data-bs-target="#addPiketModal">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Piket
+                </button>
+            </div>
+            <% } %>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <div class="row mt-3">
+            <% 
+            const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+            days.forEach(day => { 
+                const petugasHariIni = piket.filter(p => p.hari === day);
+            %>
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; background-color: var(--bg-card);">
+                    <div class="card-header border-0 text-center py-3" style="background-color: var(--primary-color); color: white; border-radius: 12px 12px 0 0;">
+                        <h6 class="mb-0 fw-bold text-uppercase tracking-wide"><%= day %></h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <ul class="list-group list-group-flush">
+                            <% if(petugasHariIni.length === 0) { %>
+                                <li class="list-group-item border-0 text-center text-muted py-3 fst-italic bg-transparent">Kosong</li>
+                            <% } else { %>
+                                <% petugasHariIni.forEach(p => { %>
+                                    <li class="list-group-item border-0 px-2 py-2 d-flex justify-content-between align-items-center bg-transparent">
+                                        <span style="color: var(--text-main);"><i class="bi bi-person text-muted me-2"></i> <%= p.nama_siswa %></span>
+                                        <% if (user.role === 'admin') { %>
+                                            <a href="/piket/delete/<%= p.id %>" class="text-danger" onclick="return confirm('Hapus petugas ini?')"><i class="bi bi-x-circle-fill"></i></a>
+                                        <% } %>
+                                    </li>
+                                <% }) %>
+                            <% } %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    </div>
+</div>
+
+<% if (user.role === 'admin') { %>
+
+<!-- Penugasan Manual yang Sudah Ada -->
+<% if (penugasan.length > 0) { %>
+<div class="premium-card mt-3">
+    <div class="card-header border-0 bg-transparent pt-4 pb-0">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-person-check text-warning me-2"></i> Penugasan Manual Aktif</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table premium-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Hari</th><th>Nama Siswa</th><th>Tugas</th><th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% penugasan.forEach(p => { %>
+                    <tr>
+                        <td class="fw-bold"><%= p.hari %></td>
+                        <td><%= p.nama_siswa %></td>
+                        <td>
+                            <span class="badge <%= p.tugas === 'jurnal' ? 'bg-primary' : p.tugas === 'sapu_pagi' ? 'bg-warning text-dark' : 'bg-danger' %>">
+                                <%= p.tugas === 'jurnal' ? '📋 Jurnal' : p.tugas === 'sapu_pagi' ? '☀️ Sapu Pagi' : '🌙 Sapu Sore' %>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/piket/penugasan/delete/<%= p.id %>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus penugasan ini?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<!-- Request Siswa yang Menunggu -->
+<% if (requests.length > 0) { %>
+<div class="premium-card mt-3">
+    <div class="card-header border-0 bg-transparent pt-4 pb-0">
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-inbox text-info me-2"></i> Request Tugas dari Siswa</h5>
+            <span class="badge bg-danger rounded-pill"><%= requests.length %></span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table premium-table align-middle">
+                <thead>
+                    <tr><th>Nama</th><th>Hari</th><th>Request</th><th>Aksi</th></tr>
+                </thead>
+                <tbody>
+                    <% requests.forEach(r => { %>
+                    <tr>
+                        <td class="fw-bold"><%= r.nama_siswa %></td>
+                        <td><%= r.hari %></td>
+                        <td>
+                            <span class="badge <%= r.tugas_diinginkan === 'jurnal' ? 'bg-primary' : r.tugas_diinginkan === 'sapu_pagi' ? 'bg-warning text-dark' : 'bg-danger' %>">
+                                <%= r.tugas_diinginkan === 'jurnal' ? '📋 Jurnal' : r.tugas_diinginkan === 'sapu_pagi' ? '☀️ Sapu Pagi' : '🌙 Sapu Sore' %>
+                            </span>
+                        </td>
+                        <td class="d-flex gap-2">
+                            <form action="/piket/request/<%= r.id %>/approve" method="POST" class="d-inline">
+                                <button class="btn btn-sm btn-success"><i class="bi bi-check-lg"></i> Setuju</button>
+                            </form>
+                            <form action="/piket/request/<%= r.id %>/reject" method="POST" class="d-inline">
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-x-lg"></i> Tolak</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<!-- Modal Penugasan Manual -->
+<div class="modal fade" id="penugasanModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow">
+      <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold"><i class="bi bi-person-check text-warning me-2"></i> Atur Penugasan Piket Manual</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="/piket/penugasan" method="POST">
+          <div class="modal-body p-4">
+              <div class="mb-3">
+                  <label class="form-label fw-bold small text-muted">HARI</label>
+                  <select name="hari" id="penugasanHari" class="form-select form-control-premium" required onchange="updateSiswaPenugasan()">
+                      <option value="">-- Pilih Hari --</option>
+                      <option value="Senin">Senin</option>
+                      <option value="Selasa">Selasa</option>
+                      <option value="Rabu">Rabu</option>
+                      <option value="Kamis">Kamis</option>
+                      <option value="Jumat">Jumat</option>
+                      <option value="Sabtu">Sabtu</option>
+                  </select>
+              </div>
+              <div class="mb-3">
+                  <label class="form-label fw-bold small text-muted">SISWA</label>
+                  <select name="nama_siswa" id="penugasanSiswa" class="form-select form-control-premium" required>
+                      <option value="">-- Pilih Hari Dulu --</option>
+                  </select>
+              </div>
+              <div class="mb-3">
+                  <label class="form-label fw-bold small text-muted">TUGAS</label>
+                  <select name="tugas" class="form-select form-control-premium" required>
+                      <option value="jurnal">📋 Ambil Jurnal & Hapus Papan</option>
+                      <option value="sapu_pagi">☀️ Menyapu Pagi</option>
+                      <option value="sapu_sore">🌙 Menyapu Sore</option>
+                  </select>
+              </div>
+          </div>
+          <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-warning px-4">Simpan Penugasan</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tambah Piket -->
+<div class="modal fade" id="addPiketModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow">
+      <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold">Tambah Jadwal Piket</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="/piket/add" method="POST">
+          <div class="modal-body p-4">
+              <div class="mb-3">
+                  <label class="form-label fw-bold small text-muted">HARI</label>
+                  <select name="hari" class="form-select form-control-premium" required>
+                      <option value="Senin">Senin</option>
+                      <option value="Selasa">Selasa</option>
+                      <option value="Rabu">Rabu</option>
+                      <option value="Kamis">Kamis</option>
+                      <option value="Jumat">Jumat</option>
+                      <option value="Sabtu">Sabtu</option>
+                      <option value="Minggu">Minggu</option>
+                  </select>
+              </div>
+              <div class="mb-3">
+                  <label class="form-label fw-bold small text-muted">NAMA SISWA</label>
+                  <input type="text" name="nama_siswa" class="form-control form-control-premium" placeholder="Masukkan nama siswa" required>
+              </div>
+          </div>
+          <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-premium px-4">Simpan</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<% } else { %>
+<!-- Request Tugas Piket untuk Siswa -->
+<div class="premium-card mt-3">
+    <div class="card-header border-0 bg-transparent pt-4 pb-0">
+        <h5 class="mb-0 fw-bold"><i class="bi bi-hand-index-thumb text-success me-2"></i> Request Tugas Piket Saya</h5>
+    </div>
+    <div class="card-body">
+        <% if (myRequest) { %>
+            <div class="alert border-0 rounded-3 d-flex align-items-center" style="background: rgba(76,201,240,0.1);">
+                <i class="bi bi-hourglass-split text-info me-3 fs-4"></i>
+                <div>
+                    <strong>Request sedang menunggu persetujuan admin</strong><br>
+                    <small class="text-muted">Hari: <b><%= myRequest.hari %></b> &bull; Tugas: <b><%= myRequest.tugas_diinginkan === 'jurnal' ? 'Jurnal' : myRequest.tugas_diinginkan === 'sapu_pagi' ? 'Sapu Pagi' : 'Sapu Sore' %></b></small>
+                </div>
+            </div>
+        <% } else { %>
+            <p class="text-muted mb-3">Kamu bisa mengajukan preferensi tugas piket kepada admin. Admin akan menyetujui atau menolak request-mu.</p>
+            <form action="/piket/request" method="POST" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold small text-muted">HARI PIKET KAMU</label>
+                    <select name="hari" class="form-select form-control-premium" required>
+                        <option value="">-- Pilih Hari --</option>
+                        <option value="Senin">Senin</option>
+                        <option value="Selasa">Selasa</option>
+                        <option value="Rabu">Rabu</option>
+                        <option value="Kamis">Kamis</option>
+                        <option value="Jumat">Jumat</option>
+                        <option value="Sabtu">Sabtu</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label fw-bold small text-muted">TUGAS YANG DIINGINKAN</label>
+                    <select name="tugas_diinginkan" class="form-select form-control-premium" required>
+                        <option value="jurnal">📋 Ambil Jurnal & Hapus Papan</option>
+                        <option value="sapu_pagi">☀️ Menyapu Pagi</option>
+                        <option value="sapu_sore">🌙 Menyapu Sore</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success w-100"><i class="bi bi-send me-1"></i> Kirim Request</button>
+                </div>
+            </form>
+        <% } %>
+    </div>
+</div>
+<% } %>
+
+<script>
+// Data siswa piket dari server (untuk dropdown penugasan)
+const piketData = <%- JSON.stringify(piket) %>;
+
+function updateSiswaPenugasan() {
+    const hari = document.getElementById('penugasanHari').value;
+    const select = document.getElementById('penugasanSiswa');
+    const filtered = piketData.filter(p => p.hari === hari);
+    select.innerHTML = '<option value="">-- Pilih Siswa --</option>';
+    filtered.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.nama_siswa;
+        opt.textContent = p.nama_siswa;
+        select.appendChild(opt);
+    });
+}
+</script>
+
+<%- include('../partials/footer') %>
+

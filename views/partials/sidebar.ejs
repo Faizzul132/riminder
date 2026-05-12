@@ -1,0 +1,49 @@
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <i class="bi bi-mortarboard-fill me-2 fs-3"></i> KelasApp
+    </div>
+    <ul class="sidebar-menu mt-4">
+        <li>
+            <a href="/dashboard" class="<%= active === 'dashboard' ? 'active' : '' %>">
+                <i class="bi bi-grid-fill"></i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="/jadwal" class="<%= active === 'jadwal' ? 'active' : '' %>">
+                <i class="bi bi-calendar3"></i> Jadwal Pelajaran
+            </a>
+        </li>
+        <li>
+            <a href="/tugas" class="<%= active === 'tugas' ? 'active' : '' %>">
+                <i class="bi bi-journal-bookmark-fill"></i> Tugas & PR
+            </a>
+        </li>
+        <li>
+            <a href="/piket" class="<%= active === 'piket' ? 'active' : '' %>">
+                <i class="bi bi-broom"></i> Jadwal Piket
+            </a>
+        </li>
+        
+        <% if (user.role === 'admin') { %>
+        <li class="mt-4 px-4 py-2 text-uppercase text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">Admin Menu</li>
+        <li>
+            <a href="/settings" class="<%= active === 'settings' ? 'active' : '' %>">
+                <i class="bi bi-gear-fill"></i> Pengaturan
+            </a>
+        </li>
+        <% } %>
+
+        <li class="mt-4 px-4 py-2 text-uppercase text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">Preferences</li>
+        <li>
+            <a href="#" id="themeToggle">
+                <i class="bi bi-moon-fill" id="themeIcon"></i> <span id="themeText">Mode Gelap</span>
+            </a>
+        </li>
+
+        <li class="mt-2">
+            <a href="/logout" class="text-danger">
+                <i class="bi bi-box-arrow-left"></i> Logout
+            </a>
+        </li>
+    </ul>
+</aside>

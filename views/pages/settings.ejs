@@ -1,0 +1,155 @@
+<%- include('../partials/header') %>
+
+<div class="row">
+    <div class="col-12 col-xl-8">
+        <div class="premium-card">
+            <div class="card-header border-0 bg-transparent pt-4 pb-0">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-gear-fill text-primary me-2"></i> Pengaturan Notifikasi WhatsApp</h5>
+            </div>
+            
+            <div class="card-body">
+                <p class="text-muted mb-4">Atur kapan notifikasi tugas dan jadwal piket akan dikirimkan secara otomatis ke grup WhatsApp.</p>
+                
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="card border border-primary border-opacity-25 shadow-sm rounded-4" style="background-color: var(--bg-main);">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-whatsapp me-2"></i> Konfigurasi Grup Tujuan</h6>
+                                <form action="/settings/wa" method="POST" class="d-flex align-items-end gap-3">
+                                    <div class="flex-grow-1">
+                                        <label class="form-label text-muted small fw-bold">ID GRUP WHATSAPP (Contoh: 12345678@g.us)</label>
+                                        <input type="text" name="wa_group_id" class="form-control form-control-premium" value="<%= waGroupId %>" placeholder="Belum ada ID Grup. Kirim !groupid ke grup Anda." required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary px-4" style="height: 48px; border-radius: 10px;">Simpan ID</button>
+                                </form>
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="bi bi-info-circle me-1"></i> Cara dapat ID: Ketik <strong>!groupid</strong> di dalam grup kelas. Bot akan membalas dengan ID grup tersebut.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <% settings.forEach(function(setting) { %>
+                        <div class="col-md-6 mb-4">
+                            <div class="card border-0 shadow-sm rounded-4 h-100" style="background-color: var(--bg-main);">
+                                <div class="card-body p-4">
+                                    <h6 class="fw-bold mb-3 d-flex align-items-center">
+                                        <% if(setting.tipe === 'tugas') { %>
+                                            <i class="bi bi-journal-check text-primary fs-4 me-2"></i>
+                                        <% } else { %>
+                                            <i class="bi bi-broom text-warning fs-4 me-2"></i>
+                                        <% } %>
+                                        Notifikasi <%= setting.tipe.charAt(0).toUpperCase() + setting.tipe.slice(1) %>
+                                    </h6>
+                                    
+                                    <form action="/settings/update/<%= setting.id %>" method="POST">
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted small fw-bold">WAKTU KIRIM</label>
+                                            <input type="time" name="waktu_kirim" class="form-control form-control-premium" value="<%= setting.waktu_kirim %>" required>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label text-muted small fw-bold">STATUS</label>
+                                            <select name="status" class="form-select form-control-premium">
+                                                <option value="aktif" <%= setting.status === 'aktif' ? 'selected' : '' %>>Aktif</option>
+                                                <option value="nonaktif" <%= setting.status === 'nonaktif' ? 'selected' : '' %>>Nonaktif</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-premium w-100 mb-2">Simpan Perubahan</button>
+                                    </form>
+                                    
+                                    <form action="/api/send-reminder/<%= setting.tipe %>" method="POST">
+                                        <button type="submit" class="btn btn-outline-success w-100" onclick="return confirm('Kirim Notifikasi <%= setting.tipe %> sekarang ke grup WA?')">
+                                            <i class="bi bi-whatsapp"></i> Kirim Notifikasi Langsung
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+        <div class="premium-card bg-primary text-white">
+            <div class="card-body p-4 text-center">
+                <i class="bi bi-robot fs-1 mb-3 d-block"></i>
+                <h5 class="fw-bold">Status Bot WhatsApp</h5>
+                <p class="mb-4 opacity-75 small">Pastikan server Node.js selalu berjalan agar bot dapat mengirim pesan tepat waktu.</p>
+                <div class="p-3 bg-white bg-opacity-10 rounded-3 text-start">
+                    <small class="d-block mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Aplikasi Berjalan</small>
+                    <small class="d-block mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Cron Job Aktif</small>
+                    <small class="d-block"><i class="bi bi-info-circle-fill text-warning me-2"></i> WA Group ID terkonfigurasi di .env</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- PWA Install Guide Card -->
+        <div class="premium-card mt-0">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;background:linear-gradient(135deg,#4361ee,#3f37c9);">
+                        <i class="bi bi-phone-fill text-white fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0">Install Sebagai Aplikasi</h6>
+                        <small class="text-muted">PWA — Tanpa Play Store</small>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3">Website ini bisa diinstall langsung di HP/laptop sebagai aplikasi layaknya native app.</p>
+                <div class="accordion accordion-flush" id="pwaGuide">
+                    <div class="accordion-item border rounded-3 mb-2" style="background-color: var(--bg-main);">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed py-2 fw-bold small" type="button" data-bs-toggle="collapse" data-bs-target="#guideAndroid" style="background:transparent;color:var(--text-main);">
+                                <i class="bi bi-android2 text-success me-2"></i> Android (Chrome)
+                            </button>
+                        </h2>
+                        <div id="guideAndroid" class="accordion-collapse collapse" data-bs-parent="#pwaGuide">
+                            <div class="accordion-body py-2 small text-muted">
+                                1. Buka web di <b>Chrome</b><br>
+                                2. Ketuk <b>⋮ (tiga titik)</b> di pojok kanan atas<br>
+                                3. Pilih <b>"Tambahkan ke Layar Utama"</b><br>
+                                4. Ketuk <b>Tambahkan</b> ✅
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border rounded-3 mb-2" style="background-color: var(--bg-main);">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed py-2 fw-bold small" type="button" data-bs-toggle="collapse" data-bs-target="#guideIOS" style="background:transparent;color:var(--text-main);">
+                                <i class="bi bi-apple me-2"></i> iPhone / iOS (Safari)
+                            </button>
+                        </h2>
+                        <div id="guideIOS" class="accordion-collapse collapse" data-bs-parent="#pwaGuide">
+                            <div class="accordion-body py-2 small text-muted">
+                                1. Buka web di <b>Safari</b><br>
+                                2. Ketuk ikon <b>Share (kotak + panah atas)</b><br>
+                                3. Pilih <b>"Add to Home Screen"</b><br>
+                                4. Ketuk <b>Add</b> ✅
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border rounded-3" style="background-color: var(--bg-main);">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed py-2 fw-bold small" type="button" data-bs-toggle="collapse" data-bs-target="#guidePC" style="background:transparent;color:var(--text-main);">
+                                <i class="bi bi-laptop me-2"></i> Laptop / PC (Chrome)
+                            </button>
+                        </h2>
+                        <div id="guidePC" class="accordion-collapse collapse" data-bs-parent="#pwaGuide">
+                            <div class="accordion-body py-2 small text-muted">
+                                1. Buka web di <b>Chrome</b><br>
+                                2. Klik ikon <b>💻 (install)</b> di address bar<br>
+                                3. Atau klik tombol <b>"Install App"</b> di header<br>
+                                4. Klik <b>Install</b> ✅
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

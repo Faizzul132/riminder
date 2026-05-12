@@ -1,0 +1,17 @@
+2026/05/10-20:13:51.077 f84 Reusing MANIFEST C:\Users\HP\Downloads\inpor\class-management\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/05/10-20:13:51.078 f84 Recovering log #696
+2026/05/10-20:13:51.186 f84 Reusing old log C:\Users\HP\Downloads\inpor\class-management\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000696.log 
+2026/05/10-20:23:14.182 f84 Level-0 table #706: started
+2026/05/10-20:23:14.285 f84 Level-0 table #706: 1179054 bytes OK
+2026/05/10-20:23:14.294 f84 Delete type=0 #696
+2026/05/10-20:24:11.479 d90 Compacting 1@1 + 9@2 files
+2026/05/10-20:24:11.684 d90 Generated table #707@1: 68063 keys, 2210256 bytes
+2026/05/10-20:24:12.037 d90 Generated table #708@1: 99869 keys, 2253039 bytes
+2026/05/10-20:24:12.161 d90 Generated table #709@1: 44240 keys, 2234917 bytes
+2026/05/10-20:24:12.187 d90 Generated table #710@1: 955 keys, 2137660 bytes
+2026/05/10-20:24:12.243 d90 Generated table #711@1: 9617 keys, 2190223 bytes
+2026/05/10-20:24:12.296 d90 Generated table #712@1: 14563 keys, 2173778 bytes
+2026/05/10-20:24:12.322 d90 Generated table #713@1: 864 keys, 2117927 bytes
+2026/05/10-20:24:12.385 d90 Generated table #714@1: 11137 keys, 2001521 bytes
+2026/05/10-20:24:12.385 d90 Compacted 1@1 + 9@2 files => 17319321 bytes
+2026/05/10-20:24:12.386 d90 compacted to: files[ 0 0 8 0 0 0 0 ]
