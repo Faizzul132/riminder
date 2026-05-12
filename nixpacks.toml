@@ -17,3 +17,11 @@ cmds = ["npm install"]
 
 [start]
 cmd = "npm start"
+[phases.setup]
+nixPkgs = ["nodejs", "npm", "google-chrome"]
+
+[phases.build]
+cmds = ["npm install"]
+
+[start]
+cmd = "npm run migrate && npm start"
