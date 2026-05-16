@@ -64,10 +64,10 @@ const initFeatures = () => {
 
 // --- ROUTES ---
 
-// Redirect root
+// Landing Page / Hero
 app.get('/', (req, res) => {
     if (req.session.user) return res.redirect('/dashboard');
-    res.redirect('/login');
+    res.render('hero');
 });
 
 // Login Pages

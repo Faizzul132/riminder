@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #4361ee;
-    --secondary-color: #3f37c9;
-    --success-color: #4cc9f0;
-    --danger-color: #f72585;
-    --warning-color: #f8961e;
+    --primary-color: #6366f1;
+    --secondary-color: #4f46e5;
+    --success-color: #10b981;
+    --danger-color: #f43f5e;
+    --warning-color: #f59e0b;
     
     /* Theme Light */
-    --bg-main: #f4f7fe;
+    --bg-main: #f8fafc;
     --bg-card: #ffffff;
-    --text-main: #2b2d42;
-    --text-muted: #6c757d;
-    --border-color: rgba(0,0,0,0.05);
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: rgba(0,0,0,0.06);
     
     --sidebar-width: 250px;
     --header-height: 70px;
@@ -425,6 +425,26 @@ body {
     }
     .main-content {
         margin-left: 0;
+    }
+    .content-area {
+        padding: 15px;
+    }
+    .premium-card .card-header, .premium-card .card-body {
+        padding: 15px;
+    }
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .login-card {
+        padding: 25px;
+        margin: 15px;
+    }
+    .top-header {
+        padding: 0 15px;
+    }
+    .stat-card {
+        padding: 20px;
     }
 }
 
