@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #6366f1;
-    --secondary-color: #4f46e5;
-    --success-color: #10b981;
-    --danger-color: #f43f5e;
-    --warning-color: #f59e0b;
+    --primary-color: #333333;
+    --secondary-color: #1a1a1a;
+    --success-color: #555555;
+    --danger-color: #777777;
+    --warning-color: #999999;
     
     /* Theme Light */
     --bg-main: #f8fafc;
@@ -89,6 +89,10 @@
 [data-theme="dark"] .table-hover>tbody>tr:hover>* {
     color: var(--text-main);
     box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.03) !important;
+}
+
+html {
+    filter: grayscale(100%) !important;
 }
 
 body {
