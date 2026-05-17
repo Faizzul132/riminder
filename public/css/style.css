@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #333333;
-    --secondary-color: #1a1a1a;
-    --success-color: #555555;
-    --danger-color: #777777;
-    --warning-color: #999999;
+    --primary-color: #18181b;
+    --secondary-color: #27272a;
+    --success-color: #18181b;
+    --danger-color: #18181b;
+    --warning-color: #18181b;
     
     /* Theme Light */
-    --bg-main: #f8fafc;
+    --bg-main: #fafafa;
     --bg-card: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border-color: rgba(0,0,0,0.06);
+    --text-main: #09090b;
+    --text-muted: #71717a;
+    --border-color: #e4e4e7;
     
     --sidebar-width: 250px;
     --header-height: 70px;
@@ -291,15 +291,20 @@ body {
 }
 
 .stat-card.bg-gradient-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: #18181b;
+    color: #ffffff;
 }
 
 .stat-card.bg-gradient-success {
-    background: linear-gradient(135deg, var(--success-color) 0%, #31a2c4 100%);
+    background: #ffffff;
+    color: #18181b;
+    border: 1px solid var(--border-color);
 }
 
 .stat-card.bg-gradient-warning {
-    background: linear-gradient(135deg, var(--warning-color) 0%, #e07a00 100%);
+    background: #fafafa;
+    color: #18181b;
+    border: 1px solid var(--border-color);
 }
 
 .stat-icon {
@@ -353,7 +358,7 @@ body {
 
 .btn-premium:hover {
     background-color: var(--secondary-color);
-    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     color: white;
 }
 
@@ -363,7 +368,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-card) 100%);
+    background: var(--bg-main);
 }
 
 .login-card {
@@ -403,7 +408,7 @@ body {
 
 .form-control-premium:focus {
     background-color: var(--bg-card);
-    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    box-shadow: 0 0 0 2px #18181b;
     color: var(--text-main);
 }
 
