@@ -5,274 +5,313 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Kelas - Selamat Datang</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
-        }
-        /* Custom animations for infinite slider */
-        @keyframes infinite-slide {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .animate-infinite-slide {
-            animation: infinite-slide 25s linear infinite;
-        }
-        .animate-infinite-slide:hover {
-            animation-play-state: paused;
+            background-color: #000;
         }
         
-        .progressive-blur-left {
-            mask-image: linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 1) 100%);
-            -webkit-mask-image: linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 1) 100%);
-            backdrop-filter: blur(8px);
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
         }
-        .progressive-blur-right {
-            mask-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 1) 100%);
-            -webkit-mask-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 1) 100%);
-            backdrop-filter: blur(8px);
+
+        /* Unicorn Studio / ASCII Specific Styles */
+        [data-us-project] {
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        [data-us-project] canvas {
+            clip-path: inset(0 0 10% 0) !important;
+        }
+        [data-us-project] * {
+            pointer-events: none !important;
+        }
+        [data-us-project] a[href*="unicorn"],
+        [data-us-project] button[title*="unicorn"],
+        [data-us-project] div[title*="Made with"],
+        [data-us-project] .unicorn-brand,
+        [data-us-project] [class*="brand"],
+        [data-us-project] [class*="credit"],
+        [data-us-project] [class*="watermark"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            left: -9999px !important;
+            top: -9999px !important;
+        }
+        
+        .dither-pattern {
+            background-image: 
+              repeating-linear-gradient(0deg, transparent 0px, transparent 1px, rgba(255,255,255,0.8) 1px, rgba(255,255,255,0.8) 2px),
+              repeating-linear-gradient(90deg, transparent 0px, transparent 1px, rgba(255,255,255,0.8) 1px, rgba(255,255,255,0.8) 2px);
+            background-size: 3px 3px;
+        }
+        
+        .stars-bg {
+            background-image: 
+              radial-gradient(1px 1px at 20% 30%, white, transparent),
+              radial-gradient(1px 1px at 60% 70%, white, transparent),
+              radial-gradient(1px 1px at 50% 50%, white, transparent),
+              radial-gradient(1px 1px at 80% 10%, white, transparent),
+              radial-gradient(1px 1px at 90% 60%, white, transparent),
+              radial-gradient(1px 1px at 33% 80%, white, transparent),
+              radial-gradient(1px 1px at 15% 60%, white, transparent),
+              radial-gradient(1px 1px at 70% 40%, white, transparent);
+            background-size: 200% 200%, 180% 180%, 250% 250%, 220% 220%, 190% 190%, 240% 240%, 210% 210%, 230% 230%;
+            background-position: 0% 0%, 40% 40%, 60% 60%, 20% 20%, 80% 80%, 30% 30%, 70% 70%, 50% 50%;
+            opacity: 0.3;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+<body class="bg-black text-white overflow-x-hidden antialiased selection:bg-white selection:text-black">
 
-    <!-- Header / Navbar -->
-    <header>
-        <nav id="navbar" class="group bg-white/50 fixed z-20 w-full border-b backdrop-blur-3xl transition-all duration-300">
-            <div class="mx-auto max-w-6xl px-6 transition-all duration-300">
-                <div class="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
-                    <div class="flex w-full items-center justify-between gap-12 lg:w-auto">
-                        <a href="/" aria-label="home" class="flex items-center space-x-2">
-                            <!-- SVG Logo -->
-                            <svg viewBox="0 0 78 18" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-6 w-auto">
-                                <path d="M3 0H5V18H3V0ZM13 0H15V18H13V0ZM18 3V5H0V3H18ZM0 15V13H18V15H0Z" fill="url(#logo-gradient)"/>
-                                <path d="M27.06 7.054V12.239C27.06 12.5903 27.1393 12.8453 27.298 13.004C27.468 13.1513 27.7513 13.225 28.148 13.225H29.338V14.84H27.808C26.9353 14.84 26.2667 14.636 25.802 14.228C25.3373 13.82 25.105 13.157 25.105 12.239V7.054H24V5.473H25.105V3.144H27.06V5.473H29.338V7.054H27.06ZM30.4782 10.114C30.4782 9.17333 30.6709 8.34033 31.0562 7.615C31.4529 6.88967 31.9855 6.32867 32.6542 5.932C33.3342 5.524 34.0822 5.32 34.8982 5.32C35.6349 5.32 36.2752 5.46733 36.8192 5.762C37.3745 6.04533 37.8165 6.40233 38.1452 6.833V5.473H40.1002V14.84H38.1452V13.446C37.8165 13.888 37.3689 14.2563 36.8022 14.551C36.2355 14.8457 35.5895 14.993 34.8642 14.993C34.0595 14.993 33.3229 14.789 32.6542 14.381C31.9855 13.9617 31.4529 13.3837 31.0562 12.647C30.6709 11.899 30.4782 11.0547 30.4782 10.114ZM38.1452 10.148C38.1452 9.502 38.0092 8.941 37.7372 8.465C37.4765 7.989 37.1309 7.62633 36.7002 7.377C36.2695 7.12767 35.8049 7.003 35.3062 7.003C34.8075 7.003 34.3429 7.12767 33.9122 7.377C33.4815 7.615 33.1302 7.972 32.8582 8.448C32.5975 8.91267 32.4672 9.468 32.4672 10.114C32.4672 10.76 32.5975 11.3267 32.8582 11.814C33.1302 12.3013 33.4815 12.6753 33.9122 12.936C34.3542 13.1853 34.8189 13.31 35.3062 13.31C35.8049 13.31 36.2695 13.1853 36.7002 12.936C37.1309 12.6867 37.4765 12.324 37.7372 11.848C38.0092 11.3607 38.1452 10.794 38.1452 10.148ZM43.6317 4.232C43.2803 4.232 42.9857 4.113 42.7477 3.875C42.5097 3.637 42.3907 3.34233 42.3907 2.991C42.3907 2.63967 42.5097 2.345 42.7477 2.107C42.9857 1.869 43.2803 1.75 43.6317 1.75C43.9717 1.75 44.2607 1.869 44.4987 2.107C44.7367 2.345 44.8557 2.63967 44.8557 2.991C44.8557 3.34233 44.7367 3.637 44.4987 3.875C44.2607 4.113 43.9717 4.232 43.6317 4.232ZM44.5837 5.473V14.84H42.6457V5.473H44.5837ZM49.0661 2.26V14.84H47.1281V2.26H49.0661ZM50.9645 10.114C50.9645 9.17333 51.1572 8.34033 51.5425 7.615C51.9392 6.88967 52.4719 6.32867 53.1405 5.932C53.8205 5.524 54.5685 5.32 55.3845 5.32C56.1212 5.32 56.7615 5.46733 57.3055 5.762C57.8609 6.04533 58.3029 6.40233 58.6315 6.833V5.473H60.5865V14.84H58.6315V13.446C58.3029 13.888 57.8552 14.2563 57.2885 14.551C56.7219 14.8457 56.0759 14.993 55.3505 14.993C54.5459 14.993 53.8092 14.789 53.1405 14.381C52.4719 13.9617 51.9392 13.3837 51.5425 12.647C51.1572 11.899 50.9645 11.0547 50.9645 10.114ZM58.6315 10.148C58.6315 9.502 58.4955 8.941 58.2235 8.465C57.9629 7.989 57.6172 7.62633 57.1865 7.377C56.7559 7.12767 56.2912 7.003 55.7925 7.003C55.2939 7.003 54.8292 7.12767 54.3985 7.377C53.9679 7.615 53.6165 7.972 53.3445 8.448C53.0839 8.91267 52.9535 9.468 52.9535 10.114C52.9535 10.76 53.0839 11.3267 53.3445 11.814C53.6165 12.3013 53.9679 12.6753 54.3985 12.936C54.8405 13.1853 55.3052 13.31 55.7925 13.31C56.2912 13.31 56.7559 13.1853 57.1865 12.936C57.6172 12.6867 57.9629 12.324 58.2235 11.848C58.4955 11.3607 58.6315 10.794 58.6315 10.148ZM65.07 6.833C65.3533 6.357 65.7273 5.98867 66.192 5.728C66.668 5.456 67.229 5.32 67.875 5.32V7.326H67.382C66.6227 7.326 66.0447 7.51867 65.648 7.904C65.2627 8.28933 65.07 8.958 65.07 9.91V14.84H63.132V5.473H65.07V6.833ZM73.3624 10.165L77.6804 14.84H75.0624L71.5944 10.811V14.84H69.6564V2.26H71.5944V9.57L74.9944 5.473H77.6804L73.3624 10.165Z" fill="#1e293b"/>
-                                <defs>
-                                    <linearGradient id="logo-gradient" x1="10" y1="0" x2="10" y2="20" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="#4f46e5" />
-                                        <stop offset="1" stop-color="#06b6d4" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            <span class="font-bold text-xl text-slate-900 ml-2 tracking-tight">KelasApp</span>
-                        </a>
+    <!-- HERO ASCII SECTION -->
+    <main class="relative min-h-screen overflow-hidden bg-black border-b border-white/20">
+        <!-- Vitruvian man animation - hidden on mobile -->
+        <div class="absolute inset-0 w-full h-full hidden lg:block opacity-80">
+            <div 
+              data-us-project="whwOGlfJ5Rz2rHaEUgHl" 
+              style="width: 100%; height: 100%; min-height: 100vh;"
+            ></div>
+        </div>
 
-                        <button id="menu-toggle" aria-label="Toggle Menu" class="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
-                            <i data-lucide="menu" id="menu-icon" class="m-auto size-6 duration-200"></i>
-                            <i data-lucide="x" id="close-icon" class="absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200"></i>
-                        </button>
+        <!-- Mobile stars background -->
+        <div class="absolute inset-0 w-full h-full lg:hidden stars-bg"></div>
 
-                        <div class="hidden lg:block">
-                            <ul class="flex gap-8 text-sm font-medium">
-                                <li><a href="#fitur" class="text-slate-600 hover:text-indigo-600 block duration-150">Fitur</a></li>
-                                <li><a href="#solusi" class="text-slate-600 hover:text-indigo-600 block duration-150">Solusi</a></li>
-                                <li><a href="#tentang" class="text-slate-600 hover:text-indigo-600 block duration-150">Tentang</a></li>
-                            </ul>
-                        </div>
+        <!-- Top Header -->
+        <div class="absolute top-0 left-0 right-0 z-20 border-b border-white/20 bg-black/30 backdrop-blur-sm">
+            <div class="container mx-auto px-4 lg:px-8 py-3 lg:py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2 lg:gap-4">
+                    <div class="font-mono text-white text-xl lg:text-2xl font-bold tracking-widest italic transform -skew-x-12">
+                        KELASAPP
                     </div>
-
-                    <div id="mobile-menu" class="bg-white mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border border-slate-200 p-6 shadow-2xl shadow-slate-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none">
-                        <div class="lg:hidden w-full mb-6">
-                            <ul class="space-y-6 text-base font-medium">
-                                <li><a href="#fitur" class="text-slate-600 hover:text-indigo-600 block duration-150">Fitur</a></li>
-                                <li><a href="#solusi" class="text-slate-600 hover:text-indigo-600 block duration-150">Solusi</a></li>
-                                <li><a href="#tentang" class="text-slate-600 hover:text-indigo-600 block duration-150">Tentang</a></li>
-                            </ul>
-                        </div>
-                        <div class="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                            <a href="/login" class="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
-                                Masuk
-                            </a>
-                            <a href="/login" class="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 shadow-md shadow-indigo-200">
-                                Mulai Sekarang
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main class="overflow-x-hidden pt-20">
-        <!-- Hero Section -->
-        <section>
-            <div class="pb-24 pt-12 md:pb-32 lg:pb-48 lg:pt-32">
-                <div class="relative mx-auto flex max-w-6xl flex-col px-6 lg:block">
-                    <div class="mx-auto max-w-lg text-center lg:ml-0 lg:w-1/2 lg:text-left relative z-10">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-sm font-medium mb-6">
-                            <span class="flex h-2 w-2 rounded-full bg-indigo-600"></span>
-                            Versi 2.0 Telah Rilis
-                        </div>
-                        <h1 class="mt-4 max-w-2xl text-balance text-5xl font-bold tracking-tight text-slate-900 md:text-6xl lg:mt-8 xl:text-7xl">
-                            Kelola Kelas <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500">10x Lebih Cepat</span>
-                        </h1>
-                        <p class="mt-6 max-w-2xl text-pretty text-lg text-slate-600 leading-relaxed">
-                            Platform manajemen kelas modern yang dirancang untuk mempermudah pembagian tugas, jadwal piket, dan notifikasi otomatis. Semua dalam satu tempat yang indah.
-                        </p>
-
-                        <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
-                            <a href="/login" class="inline-flex h-12 w-full sm:w-auto items-center justify-center whitespace-nowrap rounded-lg bg-indigo-600 px-8 py-2 text-base font-medium text-white transition-all hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
-                                <span>Coba Sekarang</span>
-                                <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
-                            </a>
-                            <a href="#fitur" class="inline-flex h-12 w-full sm:w-auto items-center justify-center whitespace-nowrap rounded-lg border border-slate-200 bg-white px-8 py-2 text-base font-medium text-slate-900 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400">
-                                <span>Pelajari Fitur</span>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Hero Image / Abstract Graphic -->
-                    <div class="mt-16 lg:mt-0 lg:absolute lg:inset-0 lg:-right-20 lg:-top-32 lg:order-last lg:h-max lg:w-2/3 flex justify-center lg:justify-end pointer-events-none">
-                        <img class="h-64 w-full object-cover sm:h-96 lg:h-[800px] lg:w-auto lg:object-contain rounded-3xl shadow-2xl lg:shadow-none mix-blend-multiply opacity-90"
-                             src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
-                             alt="Dashboard Preview" />
-                             
-                        <!-- Decorative blur circles behind image -->
-                        <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-[100px] opacity-40"></div>
-                        <div class="absolute -z-10 top-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-300 rounded-full mix-blend-multiply filter blur-[80px] opacity-40"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Infinite Slider Section -->
-        <section class="bg-white py-16 md:py-24 border-y border-slate-100">
-            <div class="group relative m-auto max-w-6xl px-6">
-                <div class="flex flex-col items-center md:flex-row gap-8 md:gap-0">
-                    <div class="md:max-w-44 md:border-r md:border-slate-200 md:pr-8 w-full text-center md:text-right">
-                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Dipercaya oleh berbagai sekolah</p>
-                    </div>
-                    <div class="relative py-6 w-full md:w-[calc(100%-11rem)] overflow-hidden">
-                        
-                        <!-- Infinite slider container -->
-                        <div class="flex w-max gap-28 animate-infinite-slide pr-28">
-                            <!-- Logos -->
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Laravel.svg" alt="Sekolah A"></div>
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="Sekolah B"></div>
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" alt="Sekolah C"></div>
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/1/17/Google-flutter-logo.png" alt="Sekolah D"></div>
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg" alt="Sekolah E"></div>
-                            
-                            <!-- Duplicate logos for seamless looping -->
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Laravel.svg" alt="Sekolah A"></div>
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="Sekolah B"></div>
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" alt="Sekolah C"></div>
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/1/17/Google-flutter-logo.png" alt="Sekolah D"></div>
-                            <div class="flex items-center justify-center w-32"><img class="h-8 w-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all" src="https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg" alt="Sekolah E"></div>
-                        </div>
-
-                        <!-- Gradient Overlays for smooth edges -->
-                        <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent"></div>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent"></div>
-                        
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Features Section -->
-        <section id="fitur" class="py-24 bg-slate-50">
-            <div class="max-w-6xl mx-auto px-6">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Fitur Utama KelasApp</h2>
-                    <p class="text-slate-600 max-w-2xl mx-auto text-lg">Semua yang Anda butuhkan untuk mengelola kelas dengan lebih efisien dan terorganisir.</p>
+                    <div class="h-3 lg:h-4 w-px bg-white/40"></div>
+                    <span class="text-white/60 text-[8px] lg:text-[10px] font-mono">EST. 2026</span>
                 </div>
                 
-                <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Feature 1 -->
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-6 text-indigo-600">
-                            <i data-lucide="check-square" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Manajemen Tugas</h3>
-                        <p class="text-slate-600">Catat dan pantau tugas dari berbagai mata pelajaran. Jangan pernah lewatkan deadline lagi.</p>
+                <div class="hidden lg:flex items-center gap-4 text-[10px] font-mono text-white/60">
+                    <a href="#fitur" class="hover:text-white transition-colors tracking-widest">FITUR</a>
+                    <div class="w-1 h-1 bg-white/40 rounded-full"></div>
+                    <a href="/login" class="hover:text-white transition-colors tracking-widest">LOGIN</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Corner Frame Accents -->
+        <div class="absolute top-0 left-0 w-8 h-8 lg:w-12 lg:h-12 border-t-2 border-l-2 border-white/30 z-20"></div>
+        <div class="absolute top-0 right-0 w-8 h-8 lg:w-12 lg:h-12 border-t-2 border-r-2 border-white/30 z-20"></div>
+        <div class="absolute left-0 w-8 h-8 lg:w-12 lg:h-12 border-b-2 border-l-2 border-white/30 z-20" style="bottom: 5vh;"></div>
+        <div class="absolute right-0 w-8 h-8 lg:w-12 lg:h-12 border-b-2 border-r-2 border-white/30 z-20" style="bottom: 5vh;"></div>
+
+        <div class="relative z-10 flex min-h-screen items-center pt-16 lg:pt-0" style="margin-top: 5vh;">
+            <div class="container mx-auto px-6 lg:px-16 lg:ml-[10%]">
+                <div class="max-w-lg relative">
+                    <!-- Top decorative line -->
+                    <div class="flex items-center gap-2 mb-3 opacity-60">
+                        <div class="w-8 h-px bg-white"></div>
+                        <span class="text-white text-[10px] font-mono tracking-wider">001</span>
+                        <div class="flex-1 h-px bg-white"></div>
                     </div>
-                    
-                    <!-- Feature 2 -->
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center mb-6 text-cyan-600">
-                            <i data-lucide="calendar" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Jadwal Piket</h3>
-                        <p class="text-slate-600">Atur dan kelola jadwal piket harian. Siswa dapat melihat tugas mereka langsung dari dashboard.</p>
+
+                    <!-- Title with dithered accent -->
+                    <div class="relative">
+                        <div class="hidden lg:block absolute -left-3 top-0 bottom-0 w-1 dither-pattern opacity-40"></div>
+                        <h1 class="text-3xl lg:text-5xl font-bold text-white mb-3 lg:mb-4 leading-tight font-mono tracking-wider" style="letter-spacing: 0.1em;">
+                            MANAJEMEN
+                            <span class="block text-white mt-1 lg:mt-2 opacity-90">
+                                KELAS
+                            </span>
+                        </h1>
                     </div>
-                    
-                    <!-- Feature 3 -->
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-6 text-emerald-600">
-                            <i data-lucide="message-circle" class="w-6 h-6"></i>
+
+                    <!-- Decorative dots pattern - desktop only -->
+                    <div class="hidden lg:flex gap-1 mb-3 opacity-40">
+                        <div class="flex gap-1">
+                            <div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div><div class="w-0.5 h-0.5 bg-white rounded-full"></div>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Notifikasi WhatsApp</h3>
-                        <p class="text-slate-600">Pengingat otomatis via WhatsApp untuk tugas dan jadwal piket ke grup kelas setiap malam.</p>
+                    </div>
+
+                    <!-- Description with subtle grid pattern -->
+                    <div class="relative">
+                        <p class="text-xs lg:text-base text-gray-300 mb-5 lg:mb-6 leading-relaxed font-mono opacity-80 uppercase">
+                            Platform manajemen kelas dengan notifikasi whatsapp & efisiensi maksimal. Kelola tugas dan jadwal piket 10x lebih cepat.
+                        </p>
+                        
+                        <!-- Technical corner accent - desktop only -->
+                        <div class="hidden lg:block absolute -right-4 top-1/2 w-3 h-3 border border-white opacity-30" style="transform: translateY(-50%);">
+                            <div class="absolute top-1/2 left-1/2 w-1 h-1 bg-white" style="transform: translate(-50%, -50%);"></div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons with technical accents -->
+                    <div class="flex flex-col lg:flex-row gap-3 lg:gap-4">
+                        <a href="/login" class="inline-block text-center relative px-5 lg:px-6 py-2 lg:py-2.5 bg-transparent text-white font-mono text-xs lg:text-sm border border-white hover:bg-white hover:text-black transition-all duration-200 group">
+                            <span class="hidden lg:block absolute -top-1 -left-1 w-2 h-2 border-t border-l border-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                            <span class="hidden lg:block absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                            GET STARTED
+                        </a>
+                        
+                        <a href="#fitur" class="inline-block text-center relative px-5 lg:px-6 py-2 lg:py-2.5 bg-transparent border border-white/30 text-white/70 font-mono text-xs lg:text-sm hover:border-white hover:text-white transition-all duration-200">
+                            LEARN MORE
+                        </a>
+                    </div>
+
+                    <!-- Bottom technical notation - desktop only -->
+                    <div class="hidden lg:flex items-center gap-2 mt-6 opacity-40">
+                        <span class="text-white text-[9px] font-mono">∞</span>
+                        <div class="flex-1 h-px bg-white"></div>
+                        <span class="text-white text-[9px] font-mono">KELASAPP.SYS</span>
                     </div>
                 </div>
             </div>
-        </section>
-        
-        <!-- CTA Section -->
-        <section class="py-24 relative overflow-hidden bg-indigo-900">
-            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-400 via-indigo-900 to-slate-900"></div>
-            <div class="relative max-w-4xl mx-auto px-6 text-center z-10">
-                <h2 class="text-4xl font-bold text-white mb-6">Siap untuk mempermudah kelas Anda?</h2>
-                <p class="text-indigo-200 text-lg mb-10 max-w-2xl mx-auto">Bergabung dengan ribuan siswa dan guru yang telah merasakan kemudahan menggunakan KelasApp.</p>
-                <a href="/login" class="inline-flex h-14 items-center justify-center rounded-xl bg-white px-8 py-3 text-lg font-bold text-indigo-900 transition-all hover:bg-slate-100 hover:scale-105 shadow-xl">
-                    Mulai Sekarang Secara Gratis
-                </a>
+        </div>
+
+        <!-- Bottom Footer of Hero -->
+        <div class="absolute left-0 right-0 z-20 border-t border-white/20 bg-black/40 backdrop-blur-sm" style="bottom: 5vh;">
+            <div class="container mx-auto px-4 lg:px-8 py-2 lg:py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3 lg:gap-6 text-[8px] lg:text-[9px] font-mono text-white/50">
+                    <span class="hidden lg:inline">SYSTEM.ACTIVE</span>
+                    <span class="lg:hidden">SYS.ACT</span>
+                    <div class="hidden lg:flex gap-1 items-end h-3">
+                        <div class="w-1 bg-white/30" style="height: 12px;"></div>
+                        <div class="w-1 bg-white/30" style="height: 8px;"></div>
+                        <div class="w-1 bg-white/30" style="height: 14px;"></div>
+                        <div class="w-1 bg-white/30" style="height: 6px;"></div>
+                        <div class="w-1 bg-white/30" style="height: 10px;"></div>
+                    </div>
+                    <span>V2.0.0</span>
+                </div>
+                
+                <div class="flex items-center gap-2 lg:gap-4 text-[8px] lg:text-[9px] font-mono text-white/50">
+                    <span class="hidden lg:inline">◐ RUNNING</span>
+                    <div class="flex gap-1">
+                        <div class="w-1 h-1 bg-white/60 rounded-full animate-pulse"></div>
+                        <div class="w-1 h-1 bg-white/40 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                        <div class="w-1 h-1 bg-white/20 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                    </div>
+                    <span class="hidden lg:inline">FRAME: ∞</span>
+                </div>
             </div>
-        </section>
+        </div>
     </main>
-    
-    <footer class="bg-white py-12 border-t border-slate-200">
-        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center space-x-2 mb-4 md:mb-0">
-                <span class="font-bold text-xl text-slate-900">KelasApp</span>
+
+    <!-- Features Section (Adapted to Dark Theme to match Hero) -->
+    <section id="fitur" class="py-24 bg-[#050505] relative z-10 border-t border-white/10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 relative">
+                <div class="inline-block mb-4 border border-white/20 px-3 py-1 font-mono text-[10px] text-white/60 tracking-widest">MODULE: FEATURES</div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 font-mono tracking-wider">FITUR UTAMA</h2>
+                <p class="text-white/60 max-w-2xl mx-auto text-sm md:text-base font-mono uppercase">Semua yang Anda butuhkan untuk mengelola kelas dengan efisien dan terorganisir.</p>
+                <div class="w-full h-px bg-white/10 mt-12 relative">
+                    <div class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-4 h-4 border border-white/20 bg-[#050505]"></div>
+                </div>
             </div>
-            <p class="text-slate-500 text-sm">© 2026 KelasApp. All rights reserved.</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-[#0a0a0a] p-8 border border-white/10 hover:border-white/30 transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-8 h-8 border-l border-b border-white/10 group-hover:border-white/30 transition-colors"></div>
+                    <div class="w-10 h-10 mb-6 text-white/80 border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors">
+                        <i data-lucide="check-square" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3 font-mono tracking-wide">MANAJEMEN TUGAS</h3>
+                    <p class="text-white/50 text-sm font-mono leading-relaxed">Catat dan pantau tugas dari berbagai mata pelajaran. Jangan pernah lewatkan deadline lagi.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-[#0a0a0a] p-8 border border-white/10 hover:border-white/30 transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-8 h-8 border-l border-b border-white/10 group-hover:border-white/30 transition-colors"></div>
+                    <div class="w-10 h-10 mb-6 text-white/80 border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors">
+                        <i data-lucide="calendar" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3 font-mono tracking-wide">JADWAL PIKET</h3>
+                    <p class="text-white/50 text-sm font-mono leading-relaxed">Atur dan kelola jadwal piket harian. Siswa dapat melihat tugas mereka langsung dari dashboard.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-[#0a0a0a] p-8 border border-white/10 hover:border-white/30 transition-colors group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-8 h-8 border-l border-b border-white/10 group-hover:border-white/30 transition-colors"></div>
+                    <div class="w-10 h-10 mb-6 text-white/80 border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors">
+                        <i data-lucide="message-square" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3 font-mono tracking-wide">NOTIFIKASI WA</h3>
+                    <p class="text-white/50 text-sm font-mono leading-relaxed">Pengingat otomatis via WhatsApp untuk tugas dan jadwal piket ke grup kelas setiap malam.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section (Adapted) -->
+    <section class="py-24 relative overflow-hidden bg-black border-t border-white/10">
+        <div class="absolute inset-0 dither-pattern opacity-10 pointer-events-none"></div>
+        <div class="relative max-w-4xl mx-auto px-6 text-center z-10">
+            <div class="w-12 h-12 border border-white/30 mx-auto mb-8 flex items-center justify-center">
+                <div class="w-2 h-2 bg-white"></div>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-6 font-mono tracking-widest uppercase">Mulai Mengelola Kelas</h2>
+            <p class="text-white/50 text-sm md:text-base mb-10 max-w-2xl mx-auto font-mono uppercase">Bergabung dengan siswa dan guru yang merasakan kemudahan KelasApp.</p>
+            <a href="/login" class="inline-block relative px-8 py-3 bg-white text-black font-mono text-sm hover:bg-transparent hover:text-white border border-white transition-colors duration-300 font-bold tracking-wider">
+                MULAI SEKARANG
+            </a>
+        </div>
+    </section>
+    
+    <footer class="bg-black py-8 border-t border-white/10">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="font-bold text-lg text-white font-mono tracking-widest">KELASAPP</span>
+            </div>
+            <div class="text-white/40 text-[10px] font-mono">
+                [ SYS.STATUS: ONLINE ] | © 2026 KELASAPP
+            </div>
         </div>
     </footer>
 
-    <!-- Script for mobile menu & lucide icons -->
+    <!-- Scripts -->
     <script>
         lucide.createIcons();
-        
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = document.getElementById('menu-icon');
-        const closeIcon = document.getElementById('close-icon');
-        const navbar = document.getElementById('navbar');
-        let isMenuOpen = false;
 
-        menuToggle.addEventListener('click', () => {
-            isMenuOpen = !isMenuOpen;
-            
-            if (isMenuOpen) {
-                mobileMenu.classList.remove('hidden');
-                mobileMenu.classList.add('block');
-                menuIcon.classList.add('rotate-180', 'scale-0', 'opacity-0');
-                closeIcon.classList.remove('-rotate-180', 'scale-0', 'opacity-0');
-                navbar.classList.add('bg-white');
-            } else {
-                mobileMenu.classList.add('hidden');
-                mobileMenu.classList.remove('block');
-                menuIcon.classList.remove('rotate-180', 'scale-0', 'opacity-0');
-                closeIcon.classList.add('-rotate-180', 'scale-0', 'opacity-0');
-                if(window.scrollY < 10) navbar.classList.remove('bg-white');
+        // Unicorn Studio Script Injection and Cleanup
+        const embedScript = document.createElement('script');
+        embedScript.type = 'text/javascript';
+        embedScript.textContent = `
+          !function(){
+            if(!window.UnicornStudio){
+              window.UnicornStudio={isInitialized:!1};
+              var i=document.createElement("script");
+              i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.33/dist/unicornStudio.umd.js";
+              i.onload=function(){
+                window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)
+              };
+              (document.head || document.body).appendChild(i)
             }
-        });
-        
-        // Navbar blur effect on scroll
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                navbar.classList.add('bg-white/80', 'shadow-sm');
-                navbar.classList.remove('bg-white/50');
-            } else {
-                navbar.classList.remove('bg-white/80', 'shadow-sm');
-                navbar.classList.add('bg-white/50');
-                if(!isMenuOpen) navbar.classList.remove('bg-white');
-            }
-        });
+          }();
+        `;
+        document.head.appendChild(embedScript);
+
+        const hideBranding = () => {
+          const projectDiv = document.querySelector('[data-us-project]');
+          if (projectDiv) {
+            const allElements = projectDiv.querySelectorAll('*');
+            allElements.forEach(el => {
+              const text = (el.textContent || '').toLowerCase();
+              if (text.includes('made with') || text.includes('unicorn')) {
+                el.remove();
+              }
+            });
+          }
+        };
+
+        hideBranding();
+        setInterval(hideBranding, 100);
+        setTimeout(hideBranding, 1000);
+        setTimeout(hideBranding, 3000);
+        setTimeout(hideBranding, 5000);
     </script>
 </body>
 </html>
