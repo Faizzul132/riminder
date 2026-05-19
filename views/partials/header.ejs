@@ -17,11 +17,16 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
     
-    <!-- Theme Init -->
+    <!-- Theme Init (Default: Light) -->
     <script>
         const savedTheme = localStorage.getItem('theme');
+        // Only apply dark if user explicitly chose dark
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            // Ensure light is always default (remove dark attribute)
+            document.documentElement.removeAttribute('data-theme');
+            if (!savedTheme) localStorage.setItem('theme', 'light');
         }
         // Register Service Worker (PWA)
         if ('serviceWorker' in navigator) {
