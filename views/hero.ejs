@@ -3,196 +3,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Kelas - Selamat Datang</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="theme-color" content="#4361ee">
+    <title>ReminderApp — Pengingat Kelas Modern</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        html {
-            filter: grayscale(100%) !important;
-            scroll-behavior: smooth;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --accent: #f72585;
+            --success: #4cc9f0;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
-            color: #09090b;
+            background-color: #0b0f1a;
+            color: #f1f5f9;
+            overflow-x: hidden;
         }
 
-        /* Animated Text Container */
+        /* ── NAVBAR ── */
+        .hero-navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(11, 15, 26, 0.75);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            text-decoration: none;
+        }
+
+        .nav-logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-logo-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links a {
+            color: rgba(241,245,249,0.65);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-left: 1.75rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: #f1f5f9; }
+
+        .btn-nav-login {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-nav-login:hover {
+            background: #3451d1;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* ── HERO ── */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 1.5rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glowing bg blobs */
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -200px; left: 50%;
+            transform: translateX(-50%);
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(67,97,238,0.22) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -100px; right: -100px;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(247,37,133,0.12) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(67,97,238,0.15);
+            border: 1px solid rgba(67,97,238,0.4);
+            color: #93c5fd;
+            border-radius: 999px;
+            padding: 0.35rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            letter-spacing: 0.3px;
+        }
+
+        .hero-badge-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #60a5fa;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.75); }
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 7vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            color: #f1f5f9;
+            margin-bottom: 1rem;
+        }
+
+        .hero-title .gradient-word {
+            background: linear-gradient(135deg, #60a5fa 0%, #818cf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animated rotating words */
         .animated-text-wrapper {
             position: relative;
-            display: inline-flex;
-            width: 100%;
-            justify-content: center;
+            display: inline-block;
+            min-width: 220px;
+            height: 1.15em;
             overflow: hidden;
-            vertical-align: top;
-            height: 1.2em;
+            vertical-align: bottom;
         }
 
         .animated-text {
             position: absolute;
-            font-weight: 600;
+            left: 0; right: 0;
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform: translateY(0);
             opacity: 1;
         }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: rgba(241,245,249,0.55);
+            max-width: 600px;
+            line-height: 1.7;
+            margin: 1.5rem auto 2.5rem;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 0.875rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-hero-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 0.85rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 0 30px rgba(67,97,238,0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-hero-primary:hover {
+            background: #3451d1;
+            color: #fff;
+            box-shadow: 0 0 40px rgba(67,97,238,0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-hero-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.06);
+            color: rgba(241,245,249,0.85);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            padding: 0.85rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-hero-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            color: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        /* Stats row */
+        .hero-stats {
+            display: flex;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #f1f5f9;
+            letter-spacing: -1px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(241,245,249,0.45);
+            margin-top: 0.15rem;
+        }
+
+        .stat-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.1);
+            align-self: stretch;
+        }
+
+        /* ── FEATURES ── */
+        .features-section {
+            padding: 7rem 1.5rem;
+            background: #0f172a;
+            position: relative;
+        }
+
+        .features-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(67,97,238,0.5), transparent);
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #818cf8;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.75rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #f1f5f9;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: rgba(241,245,249,0.5);
+            font-size: 1.05rem;
+            max-width: 550px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px;
+            padding: 2rem;
+            height: 100%;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(67,97,238,0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            background: rgba(67,97,238,0.06);
+            border-color: rgba(67,97,238,0.25);
+            transform: translateY(-4px);
+        }
+
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.3px;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: rgba(241,245,249,0.5);
+            line-height: 1.65;
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            padding: 7rem 1.5rem;
+            background: linear-gradient(135deg, #0b0f1a 0%, #0f172a 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px; height: 300px;
+            background: radial-gradient(ellipse, rgba(67,97,238,0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(1.8rem, 4vw, 2.75rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #f1f5f9;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: rgba(241,245,249,0.5);
+            font-size: 1.05rem;
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+        }
+
+        /* ── FOOTER ── */
+        .hero-footer {
+            padding: 2rem 1.5rem;
+            background: #080b13;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .hero-footer .footer-brand {
+            display: flex; align-items: center; gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .hero-footer .footer-brand-icon {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .hero-footer .footer-brand-text {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .hero-footer .footer-copy {
+            color: rgba(241,245,249,0.3);
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-stats { gap: 1.5rem; }
+            .stat-divider { display: none; }
+        }
     </style>
 </head>
-<body class="antialiased selection:bg-zinc-200 selection:text-zinc-900">
+<body>
 
-    <!-- Header / Navbar -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200">
-        <div class="container mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-zinc-900 rounded flex items-center justify-center text-white font-bold">K</div>
-                <span class="font-bold text-lg tracking-tight">KelasApp</span>
+    <!-- NAVBAR -->
+    <nav class="hero-navbar">
+        <a href="/" class="nav-logo">
+            <div class="nav-logo-icon">🎓</div>
+            <span class="nav-logo-text">ReminderApp</span>
+        </a>
+        <div class="nav-links">
+            <a href="#fitur">Fitur</a>
+            <a href="#tentang">Tentang</a>
+        </div>
+        <a href="/login" class="btn-nav-login">Masuk →</a>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-badge">
+            <div class="hero-badge-dot"></div>
+            Versi Terbaru dengan Bot WhatsApp Otomatis
+        </div>
+
+        <h1 class="hero-title">
+            Pengingat Kelas yang<br>
+            <span class="animated-text-wrapper">
+                <span id="animated-text" class="animated-text">Cepat</span>
+            </span>
+        </h1>
+
+        <p class="hero-description">
+            Kelola tugas, jadwal piket, dan notifikasi kelas dalam satu platform.
+            Dilengkapi bot WhatsApp otomatis yang mengingatkan tugas setiap malam — tanpa kerumitan.
+        </p>
+
+        <div class="hero-cta-group">
+            <a href="/login" class="btn-hero-primary">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Masuk Sekarang
+            </a>
+            <a href="#fitur" class="btn-hero-secondary">
+                <i class="bi bi-grid-3x3-gap"></i>
+                Lihat Fitur
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number">36+</div>
+                <div class="stat-label">Siswa Terdaftar</div>
             </div>
-            <nav class="hidden md:flex gap-6 text-sm font-medium text-zinc-600">
-                <a href="#fitur" class="hover:text-zinc-900 transition-colors">Fitur</a>
-                <a href="#tentang" class="hover:text-zinc-900 transition-colors">Tentang</a>
-            </nav>
-            <div>
-                <a href="/login" class="inline-flex h-9 items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50 shadow transition-colors hover:bg-zinc-900/90">
-                    Masuk
-                </a>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Notifikasi Otomatis</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Hari Jadwal Piket</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-number">PWA</div>
+                <div class="stat-label">Bisa Diinstall</div>
             </div>
         </div>
-    </header>
+    </section>
 
-    <main class="pt-16">
-        <!-- HERO SECTION -->
-        <div class="w-full">
-            <div class="container mx-auto px-6">
-                <div class="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col text-center">
-                    <div>
-                        <a href="#fitur" class="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-zinc-100 text-zinc-900 hover:bg-zinc-200/80 h-9 px-4 text-sm font-medium transition-colors gap-2 border border-zinc-200">
-                            Pelajari peluncuran v2.0 <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                        </a>
-                    </div>
-                    
-                    <div class="flex gap-4 flex-col items-center">
-                        <h1 class="text-5xl md:text-7xl max-w-3xl tracking-tighter text-center font-normal text-zinc-900 leading-tight">
-                            <span>Manajemen Kelas yang</span>
-                            <span class="animated-text-wrapper md:pb-4 md:pt-1">
-                                &nbsp;
-                                <span id="animated-text" class="animated-text text-zinc-900">
-                                    Cepat
-                                </span>
-                            </span>
-                        </h1>
+    <!-- FEATURES SECTION -->
+    <section id="fitur" class="features-section">
+        <div class="container" style="max-width: 1100px;">
+            <div class="text-center mb-5">
+                <span class="section-label">Fitur Unggulan</span>
+                <h2 class="section-title">Semua yang Kamu Butuhkan</h2>
+                <p class="section-subtitle">Dirancang khusus untuk memudahkan pengelolaan kelas sehari-hari, dari tugas hingga piket.</p>
+            </div>
 
-                        <p class="text-lg md:text-xl leading-relaxed tracking-tight text-zinc-500 max-w-2xl text-center mt-4">
-                            Mengelola kelas saat ini sudah cukup sulit. Hindari kerumitan lebih lanjut dengan meninggalkan metode usang. Tujuan kami adalah menyederhanakan manajemen tugas dan piket, membuatnya lebih mudah dan cepat dari sebelumnya.
-                        </p>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: rgba(67,97,238,0.15); color: #818cf8;">
+                            <i class="bi bi-check2-square"></i>
+                        </div>
+                        <h3>Manajemen Tugas</h3>
+                        <p>Catat tugas dari semua mata pelajaran dengan deadline. Filter otomatis sesuai jadwal pelajaran besok.</p>
                     </div>
-                    
-                    <div class="flex flex-col sm:flex-row gap-3 mt-4">
-                        <a href="#fitur" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-zinc-200 bg-white hover:bg-zinc-100 hover:text-zinc-900 h-11 px-8 gap-2 transition-colors">
-                            Lihat Fitur <i data-lucide="layout-grid" class="w-4 h-4"></i>
-                        </a>
-                        <a href="/login" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-zinc-900 text-zinc-50 hover:bg-zinc-900/90 h-11 px-8 gap-2 transition-colors shadow">
-                            Masuk Sekarang <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                        </a>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: rgba(76,201,240,0.15); color: #4cc9f0;">
+                            <i class="bi bi-broom"></i>
+                        </div>
+                        <h3>Jadwal Piket</h3>
+                        <p>Kelola piket harian dengan penugasan manual. Siswa bisa request tugas piket sesuai keinginan.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: rgba(37,211,102,0.15); color: #25d366;">
+                            <i class="bi bi-whatsapp"></i>
+                        </div>
+                        <h3>Bot WhatsApp Otomatis</h3>
+                        <p>Notifikasi tugas dan piket dikirim otomatis ke grup WA setiap malam. Tidak perlu kirim manual lagi.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: rgba(247,37,133,0.15); color: #f72585;">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                        <h3>Jadwal Pelajaran</h3>
+                        <p>Tampilkan jadwal mata pelajaran setiap hari lengkap dengan nama guru dan jam mengajar.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: rgba(248,150,30,0.15); color: #f8961e;">
+                            <i class="bi bi-eye"></i>
+                        </div>
+                        <h3>Draft Preview WA</h3>
+                        <p>Admin bisa preview pesan WhatsApp sebelum dikirim, dengan pembagian tugas piket yang bisa diatur manual.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: rgba(129,140,248,0.15); color: #a78bfa;">
+                            <i class="bi bi-phone"></i>
+                        </div>
+                        <h3>Installable PWA</h3>
+                        <p>Website ini bisa diinstall di HP dan laptop seperti aplikasi native — tanpa perlu Play Store atau App Store.</p>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- FEATURES SECTION (Preserved) -->
-        <section id="fitur" class="py-24 bg-zinc-50 border-t border-zinc-200">
-            <div class="max-w-6xl mx-auto px-6">
-                <div class="text-center mb-16 relative">
-                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 mb-4 tracking-tight">Fitur Utama KelasApp</h2>
-                    <p class="text-zinc-500 max-w-2xl mx-auto text-lg leading-relaxed">Semua yang Anda butuhkan untuk mengelola kelas dengan efisien dan terorganisir.</p>
-                </div>
-                
-                <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Feature 1 -->
-                    <div class="bg-white p-8 border border-zinc-200 rounded-xl hover:shadow-md transition-all group">
-                        <div class="w-12 h-12 mb-6 bg-zinc-100 text-zinc-900 rounded-lg flex items-center justify-center group-hover:bg-zinc-900 group-hover:text-white transition-colors">
-                            <i data-lucide="check-square" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-zinc-900 mb-3 tracking-tight">Manajemen Tugas</h3>
-                        <p class="text-zinc-500 leading-relaxed">Catat dan pantau tugas dari berbagai mata pelajaran. Jangan pernah lewatkan deadline lagi.</p>
-                    </div>
-                    
-                    <!-- Feature 2 -->
-                    <div class="bg-white p-8 border border-zinc-200 rounded-xl hover:shadow-md transition-all group">
-                        <div class="w-12 h-12 mb-6 bg-zinc-100 text-zinc-900 rounded-lg flex items-center justify-center group-hover:bg-zinc-900 group-hover:text-white transition-colors">
-                            <i data-lucide="calendar" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-zinc-900 mb-3 tracking-tight">Jadwal Piket</h3>
-                        <p class="text-zinc-500 leading-relaxed">Atur dan kelola jadwal piket harian. Siswa dapat melihat tugas mereka langsung dari dashboard.</p>
-                    </div>
-                    
-                    <!-- Feature 3 -->
-                    <div class="bg-white p-8 border border-zinc-200 rounded-xl hover:shadow-md transition-all group">
-                        <div class="w-12 h-12 mb-6 bg-zinc-100 text-zinc-900 rounded-lg flex items-center justify-center group-hover:bg-zinc-900 group-hover:text-white transition-colors">
-                            <i data-lucide="message-square" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-zinc-900 mb-3 tracking-tight">Notifikasi WA</h3>
-                        <p class="text-zinc-500 leading-relaxed">Pengingat otomatis via WhatsApp untuk tugas dan jadwal piket ke grup kelas setiap malam.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- CTA Section -->
-        <section class="py-24 relative overflow-hidden bg-white border-t border-zinc-200 text-center">
-            <div class="relative max-w-4xl mx-auto px-6 z-10">
-                <h2 class="text-4xl font-bold text-zinc-900 mb-6 tracking-tight">Siap Memulai?</h2>
-                <p class="text-zinc-500 text-lg mb-10 max-w-2xl mx-auto leading-relaxed">Bergabung dengan ribuan siswa dan guru yang telah merasakan kemudahan menggunakan KelasApp.</p>
-                <a href="/login" class="inline-flex h-12 items-center justify-center rounded-md bg-zinc-900 px-8 text-base font-medium text-white transition-colors hover:bg-zinc-900/90 shadow-md">
-                    Masuk Sekarang Secara Gratis
-                </a>
-            </div>
-        </section>
-    </main>
-    
-    <footer class="bg-white py-12 border-t border-zinc-200">
-        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-2">
-                <div class="w-6 h-6 bg-zinc-900 rounded flex items-center justify-center text-white font-bold text-xs">K</div>
-                <span class="font-bold text-lg text-zinc-900 tracking-tight">KelasApp</span>
-            </div>
-            <div class="text-zinc-500 text-sm">
-                © 2026 KelasApp. All rights reserved.
-            </div>
+    <!-- CTA SECTION -->
+    <section id="tentang" class="cta-section">
+        <div style="position: relative; z-index: 1;">
+            <span class="section-label">Mulai Sekarang</span>
+            <h2>Siap Kelola Kelas Lebih Mudah?</h2>
+            <p>Bergabung bersama tim kelas yang sudah menggunakan ReminderApp untuk manajemen harian yang lebih efisien.</p>
+            <a href="/login" class="btn-hero-primary" style="display: inline-flex;">
+                <i class="bi bi-rocket-takeoff"></i>
+                Masuk ke Aplikasi
+            </a>
         </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="hero-footer">
+        <a href="/" class="footer-brand">
+            <div class="footer-brand-icon">🎓</div>
+            <span class="footer-brand-text">ReminderApp</span>
+        </a>
+        <span class="footer-copy">© 2026 ReminderApp · Dibuat dengan ❤️ untuk kemudahan belajar</span>
     </footer>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Initialize Icons
-        lucide.createIcons();
-
-        // Animated Text Logic
-        const titles = ["Cepat", "Mudah", "Modern", "Efisien", "Praktis"];
+        // Animated rotating words
+        const titles = ["Cepat", "Mudah", "Modern", "Efisien", "Praktis", "Terorganisir"];
         let currentIndex = 0;
-        const textElement = document.getElementById("animated-text");
+        const textEl = document.getElementById("animated-text");
 
         setInterval(() => {
-            // Animate out (slide up)
-            textElement.style.transform = "translateY(-150%)";
-            textElement.style.opacity = "0";
-            
+            textEl.style.transform = "translateY(-150%)";
+            textEl.style.opacity = "0";
+
             setTimeout(() => {
-                // Change text, move to bottom instantly without transition
                 currentIndex = (currentIndex + 1) % titles.length;
-                textElement.innerText = titles[currentIndex];
-                textElement.style.transition = "none";
-                textElement.style.transform = "translateY(150%)";
-                
-                // Force reflow to apply the instant move
-                void textElement.offsetWidth;
-                
-                // Animate in (slide to center)
-                textElement.style.transition = "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-                textElement.style.transform = "translateY(0)";
-                textElement.style.opacity = "1";
-            }, 500); // Wait for animate out to finish
+                textEl.innerText = titles[currentIndex];
+                textEl.style.transition = "none";
+                textEl.style.transform = "translateY(150%)";
+                void textEl.offsetWidth;
+                textEl.style.transition = "all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+                textEl.style.transform = "translateY(0)";
+                textEl.style.opacity = "1";
+            }, 500);
         }, 2500);
     </script>
 </body>

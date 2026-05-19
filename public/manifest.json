@@ -1,7 +1,7 @@
 {
-  "name": "KelasApp - Manajemen Kelas X-5",
-  "short_name": "KelasApp",
-  "description": "Aplikasi manajemen kelas, tugas, piket, dan notifikasi WhatsApp",
+  "name": "Reminder App - Pengingat Kelas X-5",
+  "short_name": "ReminderApp",
+  "description": "Aplikasi pengingat tugas, piket, dan notifikasi WhatsApp untuk kelas",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#4361ee",

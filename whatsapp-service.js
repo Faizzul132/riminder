@@ -28,7 +28,7 @@ async function connectToWhatsApp() {
             keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })),
         },
         logger: pino({ level: "silent" }),
-        browser: ["KelasApp", "Safari", "1.0.0"],
+        browser: ["ReminderApp", "Safari", "1.0.0"],
     });
 
     sock.ev.on("connection.update", (update) => {

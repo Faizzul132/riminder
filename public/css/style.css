@@ -92,7 +92,7 @@
 }
 
 html {
-    filter: grayscale(100%) !important;
+    scroll-behavior: smooth;
 }
 
 body {

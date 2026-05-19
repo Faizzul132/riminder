@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kelasapp-v1';
+const CACHE_NAME = 'reminderapp-v1';
 const STATIC_ASSETS = [
   '/',
   '/css/style.css',
